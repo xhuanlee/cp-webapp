@@ -1,4 +1,4 @@
-import { fetchPageGroup, fetchUniqueGroup } from '../services/group';
+import { fetchGroupSip, fetchPageGroup, fetchUniqueGroup, fetchSipDetail } from '../services/group';
 
 export default {
   namespace: 'group',
@@ -8,12 +8,18 @@ export default {
     total: 0,
     entry: null,
     status: 'success',
-    loading: false,
+    groupLoading: false,
+    sipList: [],
+    sipStatus: 'success',
+    sipLoading: false,
+    sipDetailLoading: false,
+    sipDetailStatus: 'success',
+    sipDetail: null,
   },
 
   effects: {
     *fetchPageGroup({ payload: { query, page, pageSize } }, { call, put }) {
-      yield put({ type: 'addLoading' });
+      yield put({ type: 'addGroupLoading' });
       try {
         const params = new URLSearchParams({ query, page, pageSize });
         const data = yield call(fetchPageGroup, params);
@@ -30,10 +36,10 @@ export default {
         console.log('fetch group page list throws exception in model group');
         console.log(exception);
       }
-      yield put({ type: 'removeLoading' });
+      yield put({ type: 'removeGroupLoading' });
     },
     *fetchUniqueGroup({ payload: { uuid } }, { call, put }) {
-      yield put({ type: 'addLoading' });
+      yield put({ type: 'addGroupLoading' });
       try {
         const data = yield call(fetchUniqueGroup, uuid);
         if (data.RESULT === 'success') {
@@ -49,16 +55,54 @@ export default {
         console.log(`fetch unique group(${uuid}) throws exception in model group`);
         console.log(exception);
       }
-      yield put({ type: 'removeLoading' });
+      yield put({ type: 'removeGroupLoading' });
+    },
+    *fetchGroupSip({ payload: { groupUuid } }, { call, put }) {
+      yield put({ type: 'addSipLoading' });
+      try {
+        const data = yield call(fetchGroupSip, groupUuid);
+        if (data.RESULT === 'success') {
+          const { list } = data.DATA;
+          yield put({ type: 'setSipStatus', payload: { sipStatus: 'success' } });
+          yield put({ type: 'saveSipList', payload: { sipList: list } });
+        } else {
+          yield put({ type: 'setSipStatus', payload: { sipStatus: 'failure' } });
+          console.log(`fetch group (${groupUuid}) sips failed in model group`);
+        }
+      } catch (exception) {
+        yield put({ type: 'setSipStatus', payload: { sipStatus: 'exception' } });
+        console.log(`fetch group(${groupUuid}) sips throws exception in model group`);
+        console.log(exception);
+      }
+      yield put({ type: 'removeSipLoading' });
+    },
+    *fetchSipDetail({ payload: { sipUsername } }, { call, put }) {
+      yield put({ type: 'addSipDetailLoading' });
+      try {
+        const data = yield call(fetchSipDetail, sipUsername);
+        if (data.RESULT === 'success') {
+          const { entry } = data.DATA;
+          yield put({ type: 'setSipDetailStatus', payload: { sipStatus: 'success' } });
+          yield put({ type: 'saveSipDetail', payload: { sipDetail: entry } });
+        } else {
+          yield put({ type: 'setSipDetailStatus', payload: { sipStatus: 'failure' } });
+          console.log(`fetch sip (${sipUsername}) failed in model group`);
+        }
+      } catch (exception) {
+        yield put({ type: 'setSipDetailStatus', payload: { sipStatus: 'exception' } });
+        console.log(`fetch sip (${sipUsername}) throws exception in model group`);
+        console.log(exception);
+      }
+      yield put({ type: 'removeSipDetailLoading' });
     },
   },
 
   reducers: {
-    addLoading(state) {
-      return { ...state, loading: true };
+    addGroupLoading(state) {
+      return { ...state, groupLoading: true };
     },
-    removeLoading(state) {
-      return { ...state, loading: false };
+    removeGroupLoading(state) {
+      return { ...state, groupLoading: false };
     },
     saveList(state, { payload: { list, total } }) {
       return { ...state, list, total };
@@ -68,6 +112,30 @@ export default {
     },
     saveEntry(state, { payload: { entry } }) {
       return { ...state, entry };
+    },
+    addSipLoading(state) {
+      return { ...state, sipLoading: true };
+    },
+    removeSipLoading(state) {
+      return { ...state, sipLoading: false };
+    },
+    saveSipList(state, { payload: { sipList } }) {
+      return { ...state, sipList };
+    },
+    setSipStatus(state, { payload: { sipStatus } }) {
+      return { ...state, sipStatus };
+    },
+    addSipDetailLoading(state) {
+      return { ...state, sipDetailLoading: true };
+    },
+    removeSipDetailLoading(state) {
+      return { ...state, sipDetailLoading: false };
+    },
+    setSipDetailStatus(state, { payload: { sipDetailStatus } }) {
+      return { ...state, sipDetailStatus };
+    },
+    saveSipDetail(state, { payload: { sipDetail } }) {
+      return { ...state, sipDetail };
     },
   },
 };
