@@ -1,0 +1,9 @@
+export const SUCCESS = 'success';
+export const FAIL = 'fail';
+export const EXCEPTION = 'exception';
+export const ERROR = 'error';
+export const WARNING = 'warning';
+export const VALIDATING = 'validating';
+export const NONE = 'none';
+export const YES = 'yes';
+export const NO = 'no';

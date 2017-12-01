@@ -1,4 +1,8 @@
-import { fetchGroupSip, fetchPageGroup, fetchUniqueGroup, fetchSipDetail } from '../services/group';
+import {
+  fetchGroupSip, fetchPageGroup, fetchUniqueGroup, fetchSipDetail, newSip,
+  checkSipUsername } from '../services/group';
+import { FIELD_SIP_USERNAME, FIELD_SIP_PASSWORD, FIELD_SIP_TYPE } from '../constants/GroupConstants';
+import { ERROR, EXCEPTION, SUCCESS, VALIDATING } from '../constants/AllConstants';
 
 export default {
   namespace: 'group',
@@ -12,9 +16,15 @@ export default {
     sipList: [],
     sipStatus: 'success',
     sipLoading: false,
+    addSipModal: false,
+    addSipStatus: 'success',
+    modalConfirmLoading: false,
     sipDetailLoading: false,
     sipDetailStatus: 'success',
     sipDetail: null,
+    usernameValidate: null,
+    passwordValidate: null,
+    typeValidate: null,
   },
 
   effects: {
@@ -95,6 +105,47 @@ export default {
       }
       yield put({ type: 'removeSipDetailLoading' });
     },
+    *newSip({ payload: { sip } }, { call, put }) {
+      try {
+        yield put({ type: 'addModalConfirmLoading' });
+        yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_USERNAME, status: VALIDATING } });
+        yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_PASSWORD, status: VALIDATING } });
+        let validate = true;
+
+        if (sip && sip.username) {
+          const checkData = yield call(checkSipUsername, sip.username);
+          if (checkData.RESULT === 'success') {
+            yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_USERNAME, status: SUCCESS } });
+          } else {
+            yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_USERNAME, status: ERROR, msg: `${sip.username}已被使用` } });
+            validate = false;
+          }
+        } else {
+          yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_USERNAME, status: ERROR, msg: '不能为空' } });
+          validate = false;
+        }
+        if (sip && sip.password) {
+          yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_PASSWORD, status: SUCCESS } });
+        } else {
+          yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_PASSWORD, status: ERROR, msg: '不能为空' } });
+          validate = false;
+        }
+        if (!validate) {
+          yield put({ type: 'removeModalConfirmLoading' });
+          return;
+        }
+
+        const data = yield call(newSip, sip);
+        console.log('new_sip result data');
+        console.log(data);
+        yield put({ type: '', payload: { addSipStatus: data.RESULT } });
+        yield put({ type: 'removeModalConfirmLoading' });
+      } catch (exception) {
+        console.log('save new_sip error');
+        yield put({ type: '', payload: { addSipStatus: EXCEPTION } });
+        yield put({ type: 'removeModalConfirmLoading' });
+      }
+    },
   },
 
   reducers: {
@@ -136,6 +187,37 @@ export default {
     },
     saveSipDetail(state, { payload: { sipDetail } }) {
       return { ...state, sipDetail };
+    },
+    showAddSipModal(state) {
+      return { ...state, addSipModal: true };
+    },
+    hideAddSipModal(state) {
+      return { ...state, addSipModal: false };
+    },
+    addModalConfirmLoading(state) {
+      return { ...state, modalConfirmLoading: true };
+    },
+    removeModalConfirmLoading(state) {
+      return { ...state, modalConfirmLoading: false };
+    },
+    setAddSipStatus(state, { payload: { addSipStatus } }) {
+      return { ...state, addSipStatus };
+    },
+    setAddSipValidate(state, { payload: { field, status, msg } }) {
+      switch (field) {
+        case FIELD_SIP_USERNAME: {
+          return { ...state, usernameValidate: { status, msg } };
+        }
+        case FIELD_SIP_PASSWORD: {
+          return { ...state, passwordValidate: { status, msg } };
+        }
+        case FIELD_SIP_TYPE: {
+          return { ...state, typeValidate: { status, msg } };
+        }
+        default: {
+          return state;
+        }
+      }
     },
   },
 };

@@ -13,5 +13,19 @@ export async function fetchGroupSip(groupUuid) {
 }
 
 export async function fetchSipDetail(sipUsername) {
-  return request(`/cp-api/directory/unique?sip=${sipUsername}`);
+  return request(`/cp-api/directory/unique/status?sip=${sipUsername}`);
+}
+
+export async function checkSipUsername(username) {
+  return request(`/cp-api/directory/check?sip=${username}`);
+}
+
+export async function newSip(sip) {
+  console.log('new_sip');
+  console.log(sip);
+
+  return request('/cp-api/directory/sipuser', {
+    method: 'POST',
+    body: sip,
+  });
 }

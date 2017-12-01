@@ -23,8 +23,8 @@
   "hash": true,
   "proxy": {
     "/cp-api/*": {
-      "target": "https://callpass.cn/cp-api",
-      // target: "http://localhost:8081/cp-api",
+      // "target": "https://callpass.cn/cp-api",
+      "target": "http://localhost:9080/cp-api",
       "changeOrigin": true,
       "secure": false,
       "pathRewrite": {"^/cp-api": ""}
