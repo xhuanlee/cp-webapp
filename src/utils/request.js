@@ -29,7 +29,8 @@ export default function request(url, options) {
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     newOptions.headers = {
       Accept: 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
+      // 'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/x-www-form-urlencoded',
       ...newOptions.headers,
     };
     newOptions.body = JSON.stringify(newOptions.body);
