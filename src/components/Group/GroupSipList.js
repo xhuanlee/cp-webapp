@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Spin, Icon, Tooltip, Button, Modal, Form, Input, Select, Switch } from 'antd';
+import { Spin, Icon, Tooltip, Button, Modal, Form, Input, Select, Switch, Popconfirm, Card, Row, Col } from 'antd';
 import SipStatus from '../Sip/SipStatus';
 import CpIcon from '../CpIcon';
 import styles from './GroupSipList.less';
@@ -95,6 +95,7 @@ class GroupSipList extends PureComponent {
 
     this.sipClick = this.sipClick.bind(this);
     this.saveForm = this.saveForm.bind(this);
+    this.deleteGroupSip = this.deleteGroupSip.bind(this);
   }
   componentWillMount() {
     const { list } = this.props;
@@ -104,6 +105,11 @@ class GroupSipList extends PureComponent {
     }
   }
   addSip() {
+    // form 重置
+    if (this.modalForm) {
+      this.modalForm.resetFields();
+      this.props.changeInputSip(this.modalForm.getFieldsValue());
+    }
     this.setState({ modalTitle: '新增SIP' });
     this.props.addSip();
   }
@@ -127,10 +133,20 @@ class GroupSipList extends PureComponent {
     }
   }
   cancelAddSip() {
+    // form 重置
+    if (this.modalForm) {
+      this.modalForm.resetFields();
+    }
     this.props.cancelAddSip(this.modalForm);
   }
   saveForm(form) {
     this.modalForm = form;
+  }
+  deleteGroupSip(username) {
+    console.log(`delete sip ${username}`);
+    const { group } = this.props;
+    const { uuid } = group;
+    this.props.deleteGroupSip(username, uuid);
   }
   render() {
     const {
@@ -139,7 +155,7 @@ class GroupSipList extends PureComponent {
       addSip, cancelAddSip, newSip, updateSip, group,
       changeInputSip, inputSip, addSipValidate,
       usernameValidate, passwordValidate, typeValidate,
-      ...restProps } = this.props;
+      deleteGroupSip, ...restProps } = this.props;
     const { selectedSip } = this.state;
     const listComponent = list.map((item) => {
       let title = null;
@@ -161,22 +177,39 @@ class GroupSipList extends PureComponent {
         cpTitle = '内线';
         cpIcon = <CpIcon className={`${styles.icon} ${styles.phoneIcon}`} type="phone2" />;
       }
-      return (
-        <li className={styles.sipItem} key={item.username}>
-          <Tooltip title={title} placement="right">
-            {icon}
-          </Tooltip>
-          <Tooltip title={cpTitle} placement="right">
-            {cpIcon}
-          </Tooltip>
-          <span
-            onClick={() => { this.sipClick(username); }}
-            className={`${styles.sipText} ${selectedSip === username ? styles.sipTextSelected : null}`}
+
+      const layout = { xs: 24, sm: 24, md: 24, lg: 12, xl: 8, xxl: 6 };
+      const colElem = (
+        <Col
+          {...layout}
+          key={username}
+          className={styles.sipItemCol}
+        >
+          <Card
+            loading={loading}
+            hoverable
           >
-            {username}
-          </span>
-        </li>
+            <div className={styles.sipItemCard}>
+              <Tooltip title={title} placement="right">
+                {icon}
+              </Tooltip>
+              <Tooltip title={cpTitle} placement="right">
+                {cpIcon}
+              </Tooltip>
+              <span className={`${styles.sipText}`}>
+                {username}
+              </span>
+            </div>
+            <div className={styles.sipItemDelete} title="删除">
+              <Popconfirm title="确定删除？" onConfirm={() => this.deleteGroupSip(username)} onCancel={() => console.log('cancel delete')} okText="删除" cancelText="取消">
+                <Button size="small" type="dashed" shape="circle" icon="close" />
+              </Popconfirm>
+            </div>
+          </Card>
+        </Col>
       );
+
+      return colElem;
     });
     return (
       <div {...restProps}>
@@ -188,9 +221,9 @@ class GroupSipList extends PureComponent {
         </div>
         <Spin spinning={loading}>
           <div>
-            <ul className={styles.sipList}>
+            <Row gutter={16}>
               {listComponent}
-            </ul>
+            </Row>
           </div>
         </Spin>
         <Modal

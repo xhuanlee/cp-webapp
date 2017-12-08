@@ -33,7 +33,9 @@ export default function request(url, options) {
       'Content-Type': 'application/x-www-form-urlencoded',
       ...newOptions.headers,
     };
-    newOptions.body = JSON.stringify(newOptions.body);
+    // newOptions.body = JSON.stringify(newOptions.body);
+    const body = new URLSearchParams(newOptions.body);
+    newOptions.body = body.toString();
   }
 
   return fetch(url, newOptions)

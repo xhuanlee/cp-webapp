@@ -54,12 +54,13 @@ class Groups extends PureComponent {
   }
   addSip() {
     this.props.dispatch({ type: 'group/showAddSipModal' });
+
+    this.props.dispatch({ type: 'group/setAddSipValidate', payload: { field: FIELD_SIP_USERNAME, status: NONE } });
+    this.props.dispatch({ type: 'group/setAddSipValidate', payload: { field: FIELD_SIP_PASSWORD, status: NONE } });
   }
-  cancelAddSip(modalForm) {
+  cancelAddSip() {
     this.props.dispatch({ type: 'group/hideAddSipModal' });
 
-    // form 重置
-    modalForm.resetFields();
     this.props.dispatch({ type: 'group/setAddSipValidate', payload: { field: FIELD_SIP_USERNAME, status: NONE } });
     this.props.dispatch({ type: 'group/setAddSipValidate', payload: { field: FIELD_SIP_PASSWORD, status: NONE } });
   }
@@ -77,6 +78,9 @@ class Groups extends PureComponent {
   }
   updateSip(sip) {
     this.props.dispatch({ type: 'group/updateSip', payload: { sip } });
+  }
+  deleteGroupSip(sipUsername, groupUuid) {
+    this.props.dispatch({ type: 'group/deleteGroupSip', payload: { sipUsername, groupUuid } });
   }
   render() {
     const { list, loading, status,
@@ -96,7 +100,7 @@ class Groups extends PureComponent {
             fetchGroupSip={this.fetchGroupSip.bind(this)}
           />
         </Sider>
-        <Sider className={styles.sipLayout}>
+        <Content>
           <GroupSipList
             group={this.state.group}
             inputSip={this.state.inputSip}
@@ -116,15 +120,16 @@ class Groups extends PureComponent {
             newSip={this.newSip.bind(this)}
             updateSip={this.updateSip.bind(this)}
             changeInputSip={this.changeInputSip.bind(this)}
-          />
-        </Sider>
-        <Content>
-          <GroupSipDetail
-            loading={sipDetailLoading}
-            status={sipDetailStatus}
-            sipDetail={sipDetail}
+            deleteGroupSip={this.deleteGroupSip.bind(this)}
           />
         </Content>
+        {/* <Content> */}
+          {/* <GroupSipDetail */}
+            {/* loading={sipDetailLoading} */}
+            {/* status={sipDetailStatus} */}
+            {/* sipDetail={sipDetail} */}
+          {/* /> */}
+        {/* </Content> */}
       </Layout>
     );
   }

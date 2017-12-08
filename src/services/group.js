@@ -29,3 +29,10 @@ export async function newSip(sip) {
     body: sip,
   });
 }
+
+export async function deleteGroupSip(groupUuid, sipUsername) {
+  console.log(`delete sip: ${groupUuid}, ${sipUsername}`);
+  return request(`/cp-api/directory/sipuser?groupUuid=${groupUuid}&username=${sipUsername}`, {
+    method: 'DELETE',
+  });
+}

@@ -1,9 +1,55 @@
+@import "~antd/lib/style/themes/default.less";
+
+.sipItemCol {
+  margin-bottom: 12px;
+}
+.sipItemCard {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sipItemDelete {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 .sipList {
   list-style: none;
   padding: 0;
 }
 .sipItem {
   padding: 4px 8px;
+  position: relative;
+  .sipText {
+    padding: 8px 4px;
+    cursor: pointer;
+  }
+  .sipItemBtns {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    display: none;
+    transition: all 1s;
+  }
+  &:hover {
+    border-bottom: 1px solid #e8e8e8;
+    background-color: @item-hover-bg;
+    //.sipText {
+    //  background-color: lightcyan;
+    //  margin-left: 8px;
+    //  box-shadow: 1px 1px #e8e8e8;
+    //}
+    .sipItemBtns {
+      display: inline-block;
+    }
+  }
+}
+.sipItemSelected {
+  background-color: @item-active-bg;
+  .sipItemBtns {
+    display: inline-block;
+  }
 }
 .icon {
   margin-right: 8px;
@@ -19,15 +65,6 @@
 }
 .phoneIcon {
   margin-right: 8px;
-}
-.sipText {
-  padding: 8px 4px;
-  cursor: pointer;
-}
-.sipText:hover {
-  background-color: lightcyan;
-  margin-left: 8px;
-  box-shadow: 1px 1px #e8e8e8;
 }
 .sipTextSelected {
   background-color: lightcyan;

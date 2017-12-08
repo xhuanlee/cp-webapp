@@ -1,6 +1,8 @@
+import { message } from 'antd';
 import {
   fetchGroupSip, fetchPageGroup, fetchUniqueGroup, fetchSipDetail, newSip,
-  checkSipUsername } from '../services/group';
+  checkSipUsername, deleteGroupSip
+} from '../services/group';
 import { FIELD_SIP_USERNAME, FIELD_SIP_PASSWORD, FIELD_SIP_TYPE } from '../constants/GroupConstants';
 import { ERROR, EXCEPTION, SUCCESS, VALIDATING } from '../constants/AllConstants';
 
@@ -130,20 +132,49 @@ export default {
           yield put({ type: 'setAddSipValidate', payload: { field: FIELD_SIP_PASSWORD, status: ERROR, msg: '不能为空' } });
           validate = false;
         }
+        // 验证失败
         if (!validate) {
           yield put({ type: 'removeModalConfirmLoading' });
-          return;
+          return null;
         }
 
+        // 验证成功后添加
         const data = yield call(newSip, sip);
         console.log('new_sip result data');
         console.log(data);
-        yield put({ type: '', payload: { addSipStatus: data.RESULT } });
+        if (data.RESULT === SUCCESS) {
+          // 刷新 sip 列表
+          yield put({ type: 'fetchGroupSip', payload: { groupUuid: sip.groupUuid } });
+          yield put({ type: 'hideAddSipModal' });
+          message.success('添加SIP账号成功');
+        } else {
+          message.error('添加SIP账号失败');
+        }
+        yield put({ type: 'setAddSipStatus', payload: { addSipStatus: data.RESULT } });
         yield put({ type: 'removeModalConfirmLoading' });
       } catch (exception) {
         console.log('save new_sip error');
-        yield put({ type: '', payload: { addSipStatus: EXCEPTION } });
+        console.log(exception);
+        message.error('服务器异常，添加SIP账号失败');
+        yield put({ type: 'setAddSipStatus', payload: { addSipStatus: EXCEPTION } });
         yield put({ type: 'removeModalConfirmLoading' });
+      }
+    },
+    *deleteGroupSip({ payload: { groupUuid, sipUsername } }, { call, put }) {
+      try {
+        const data = yield call(deleteGroupSip, groupUuid, sipUsername);
+        if (data.RESULT === SUCCESS) {
+          // 刷新 sip 列表
+          yield put({ type: 'fetchGroupSip', payload: { groupUuid } });
+          // 清空右边 sip 详情
+          yield put({ type: 'saveSipDetail', payload: { sipDetail: {} } });
+          message.success('删除SIP账号成功');
+        } else {
+          message.error('删除SIP账号失败');
+        }
+      } catch (e) {
+        console.log('delete sip error');
+        message.error('服务器异常，删除SIP账号失败');
       }
     },
   },
