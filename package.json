@@ -35,6 +35,7 @@
     "numeral": "^2.0.6",
     "prop-types": "^15.5.10",
     "qs": "^6.5.0",
+    "query-string": "^5.0.1",
     "react": "^16.0.0",
     "react-container-query": "^0.9.1",
     "react-document-title": "^2.0.3",
@@ -82,14 +83,27 @@
     "nightmare": "^2.10.0"
   },
   "babel": {
-    "presets": ["env", "react"],
-    "plugins": ["transform-decorators-legacy", "transform-class-properties"]
+    "presets": [
+      "env",
+      "react"
+    ],
+    "plugins": [
+      "transform-decorators-legacy",
+      "transform-class-properties"
+    ]
   },
   "jest": {
-    "setupFiles": ["<rootDir>/tests/setupTests.js"],
-    "testMatch": ["**/?(*.)(spec|test|e2e).js?(x)"],
+    "setupFiles": [
+      "<rootDir>/tests/setupTests.js"
+    ],
+    "testMatch": [
+      "**/?(*.)(spec|test|e2e).js?(x)"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/tests/jasmine.js",
-    "moduleFileExtensions": ["js", "jsx"],
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/tests/styleMock.js"
     }
@@ -97,7 +111,14 @@
   "lint-staged": {
     "**/*.{js,jsx}": "lint-staged:js",
     "**/*.less": "stylelint --syntax less",
-    "*.{js,jsx,less,json}": ["prettier --write", "git add"]
+    "*.{js,jsx,less,json}": [
+      "prettier --write",
+      "git add"
+    ]
   },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 10"]
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
 }

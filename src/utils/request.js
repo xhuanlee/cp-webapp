@@ -42,6 +42,13 @@ export default function request(url, options) {
     .then(checkStatus)
     .then(response => response.json())
     .catch((error) => {
+      const { status } = error.response;
+      if (status === 401) {
+        notification.error({
+          message: error.message,
+          description: '请登录后在尝试哦',
+        });
+      }
       if (error.code) {
         notification.error({
           message: error.name,

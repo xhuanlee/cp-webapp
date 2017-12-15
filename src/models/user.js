@@ -7,6 +7,8 @@ export default {
     list: [],
     loading: false,
     currentUser: {},
+    currentGroup: {},
+    token: null,
   },
 
   effects: {
@@ -47,10 +49,22 @@ export default {
         loading: action.payload,
       };
     },
-    saveCurrentUser(state, action) {
+    saveCurrentUser(state, { payload: { currentUser } }) {
       return {
         ...state,
-        currentUser: action.payload,
+        currentUser,
+      };
+    },
+    saveCurrentGroup(state, { payload: { currentGroup } }) {
+      return {
+        ...state,
+        currentGroup,
+      };
+    },
+    saveToken(state, { payload: { token } }) {
+      return {
+        ...state,
+        token,
       };
     },
     changeNotifyCount(state, action) {

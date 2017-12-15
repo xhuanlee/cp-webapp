@@ -7,3 +7,7 @@ export const VALIDATING = 'validating';
 export const NONE = 'none';
 export const YES = 'yes';
 export const NO = 'no';
+export const TOKEN_KEY = 'token';
+export const USER_KEY = 'call_pass_user';
+export const GROUP_KEY = 'call_pass_user';
+export const ALREADY_LOGIN = 'already_login';
