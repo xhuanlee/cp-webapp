@@ -41,6 +41,7 @@ function RouterConfig({ history, app }) {
   const navData = getNavData(app);
   const UserLayout = getLayout(navData, 'UserLayout').component;
   const BasicLayout = getLayout(navData, 'BasicLayout').component;
+  const CpUserLayout = getLayout(navData, 'CpUserLayout').component;
 
   const passProps = {
     app,
@@ -55,7 +56,8 @@ function RouterConfig({ history, app }) {
       <Router history={history}>
         <Switch>
           <Route path="/user" render={props => <UserLayout {...props} {...passProps} />} />
-          <Route path="/" render={props => <BasicLayout {...props} {...passProps} />} />
+          <Route path="/main" render={props => <BasicLayout {...props} {...passProps} />} />
+          <Route path="/" render={props => <CpUserLayout {...props} {...passProps} />} />
         </Switch>
       </Router>
     </LocaleProvider>

@@ -13,7 +13,7 @@ export const getNavData = app => [
     component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     layout: 'BasicLayout',
     name: '首页', // for breadcrumb
-    path: '/',
+    path: '/main',
     children: [
       {
         name: '公司管理',
@@ -189,8 +189,7 @@ export const getNavData = app => [
           {
             name: '登录',
             path: 'login',
-            // component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
-            component: dynamicWrapper(app, ['login'], () => import('../routes/User/NormalLoginForm')),
+            component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
           },
           {
             name: '注册',
@@ -201,6 +200,49 @@ export const getNavData = app => [
             name: '注册结果',
             path: 'register-result',
             component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    component: dynamicWrapper(app, [], () => import('../layouts/CpUserLayout')),
+    path: '/',
+    layout: 'CpUserLayout',
+    children: [
+      {
+        name: '主页',
+        path: '/',
+        component: dynamicWrapper(app, ['home'], () => import('../routes/Home/HomePage')),
+      },
+      {
+        name: '关于',
+        path: '/about',
+        component: dynamicWrapper(app, [], () => import('../routes/Home/AboutPage')),
+      },
+      {
+        name: '注册',
+        path: 'register',
+        component: dynamicWrapper(app, ['register'], () => import('../routes/User/CpRegister')),
+      },
+      {
+        name: '注册结果',
+        path: 'register-result',
+        component: dynamicWrapper(app, ['register'], () => import('../routes/User/RegisterResult')),
+      },
+      {
+        name: '登录',
+        path: 'login',
+        component: dynamicWrapper(app, ['login'], () => import('../routes/User/NormalLoginForm')),
+      },
+      {
+        name: '公司',
+        path: 'e',
+        children: [
+          {
+            name: '登录',
+            path: ':group',
+            component: dynamicWrapper(app, ['login'], () => import('../routes/User/GroupLoginForm')),
           },
         ],
       },

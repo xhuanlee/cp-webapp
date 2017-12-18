@@ -2,24 +2,23 @@ import React from 'react';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { Form, Icon, Input, Button, Checkbox, Row, Col, Alert } from 'antd';
-import { saveItem, getItem, removeItem } from '../../utils/cputils';
+import { saveItem, removeItem, getItem } from '../../utils/cputils';
 
 const FormItem = Form.Item;
 
-const CALLPASS_USERNAME = 'callpass_username';
 const REMEMBER_USERNAME = 'remember_username';
+const CALLPASS_GROUP_USERNAME = 'callpass_group_username';
 
-class NormalLoginForm extends React.Component {
-
+class GroupLoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
-    // console.log('component will mount');
+    // 根据 url 获取公司信息
+    const { group } = this.props.match.params;
+    this.props.dispatch({ type: 'login/fetchGroupByUrl', payload: { cpUrl: group } });
   }
 
   componentDidMount() {
@@ -32,14 +31,20 @@ class NormalLoginForm extends React.Component {
       if (!err) {
         // console.log('Received values of form: ', values);
         if (values.remember) {
-          saveItem(CALLPASS_USERNAME, values.userName);
+          saveItem(CALLPASS_GROUP_USERNAME, values.userName);
         } else {
-          removeItem(CALLPASS_USERNAME);
+          removeItem(CALLPASS_GROUP_USERNAME);
         }
-        const { userName, password } = values;
+        let { userName } = values;
+        const { password } = values;
+        // 如果是 1-6 位纯数字的话认为是分机号登录，自动在前面加上公司总机
+        if (/^(\d{1,6})$/.test(userName)) {
+          userName = `${this.props.group.sammelnummer}${userName}`;
+        }
+        const { group } = this.props.params;
         const query = queryString.parse(this.props.location.search);
         const { redirect } = query || {};
-        this.props.dispatch({ type: 'login/callpassLogin', payload: { username: userName, password, redirect, group: null } });
+        this.props.dispatch({ type: 'login/callpassLogin', payload: { username: userName, password, redirect, group } });
       }
     });
   }
@@ -56,16 +61,19 @@ class NormalLoginForm extends React.Component {
   }
 
   render() {
+    // console.log('render');
+    // console.log(this.props.loginError);
     const { getFieldDecorator } = this.props.form;
-    const { loginError } = this.props;
-    let username = getItem(CALLPASS_USERNAME);
+    const { loginError, group } = this.props;
+    let username = getItem(CALLPASS_GROUP_USERNAME);
     username = username || '';
+
     return (
       <Row
         type="flex"
         align="middle"
         justify="center"
-        style={{ paddingTop: '12%' }}
+        style={{ paddingTop: '10%' }}
       >
         <Col
           xs={20}
@@ -75,6 +83,28 @@ class NormalLoginForm extends React.Component {
           xl={8}
         >
           <Form onSubmit={this.handleSubmit} className="login-form">
+            {
+                group && group.name ?
+                    (
+                      <div>
+                        <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+                          <img style={{ maxHeight: '120px' }} src={group.logo} alt="LOGO" />
+                        </div>
+                        <div style={{ textAlign: 'center', fontSize: '14px' }}>
+                          <a href={group.website} target="_blank">{group.name}</a>
+                        </div>
+                        <div style={{ textAlign: 'center', marginBottom: '24px', fontSize: '14px' }}>
+                          <a href={`/d/${group.sammelnummer}`} target="_blank">{group.telephone}</a>
+                        </div>
+                      </div>
+                    )
+                    :
+                    (
+                      <div style={{ textAlign: 'center', fontSize: '16px', marginBottom: '8px' }}>
+                        <a href="/login">返回个人用户登录</a>
+                      </div>
+                    )
+            }
             {
                   (loginError && loginError.startsWith('error') && this.renderMessage('用户名或密码错误')) ||
                   (loginError && loginError.startsWith('exception') && this.renderMessage('服务器异常，稍后再试')) || null
@@ -115,9 +145,11 @@ class NormalLoginForm extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { loginError } = state.login;
+  const { loginError, group, groupError } = state.login;
   return {
     loginError,
+    group,
+    groupError,
   };
 }
 
@@ -127,4 +159,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(NormalLoginForm));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(GroupLoginForm));

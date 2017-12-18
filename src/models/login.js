@@ -1,14 +1,15 @@
 import { routerRedux } from 'dva/router';
 import { fakeAccountLogin, fakeMobileLogin } from '../services/api';
 import { isNotBlank, removeItem, saveItem } from '../utils/cputils';
-import { ALREADY_LOGIN, GROUP_KEY, TOKEN_KEY, USER_KEY } from '../constants/AllConstants';
-import { callPassLogin } from '../services/notlogin';
+import { ALREADY_LOGIN, GROUP_KEY, SUCCESS, TOKEN_KEY, USER_KEY } from '../constants/AllConstants';
+import { callPassLogin, fetchGroupByUrl } from '../services/notlogin';
 
 export default {
   namespace: 'login',
 
   state: {
     status: undefined,
+    group: {},
   },
 
   effects: {
@@ -61,6 +62,13 @@ export default {
         }
       } catch (exception) {
         console.log('logout failed');
+      }
+    },
+    *fetchGroupByUrl({ payload: { cpUrl } }, { call, put }) {
+      const data = yield call(fetchGroupByUrl, cpUrl);
+      if (data.RESULT === SUCCESS) {
+        const group = data.DATA.entry;
+        yield put({ type: 'saveGroup', payload: { group } });
       }
     },
     *accountSubmit({ payload }, { call, put }) {
@@ -121,5 +129,8 @@ export default {
     changeLoginError(state, { payload }) {
       return { ...state, loginError: payload.loginError };
     },
+    saveGroup(state, { payload: { group } }) {
+      return { ...state, group };
+    }
   },
 };
