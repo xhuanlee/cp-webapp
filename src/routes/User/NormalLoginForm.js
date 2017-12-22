@@ -10,7 +10,6 @@ const CALLPASS_USERNAME = 'callpass_username';
 const REMEMBER_USERNAME = 'remember_username';
 
 class NormalLoginForm extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {};
@@ -33,8 +32,10 @@ class NormalLoginForm extends React.Component {
         // console.log('Received values of form: ', values);
         if (values.remember) {
           saveItem(CALLPASS_USERNAME, values.userName);
+          saveItem(REMEMBER_USERNAME, true);
         } else {
           removeItem(CALLPASS_USERNAME);
+          removeItem(REMEMBER_USERNAME);
         }
         const { userName, password } = values;
         const query = queryString.parse(this.props.location.search);
@@ -60,6 +61,8 @@ class NormalLoginForm extends React.Component {
     const { loginError } = this.props;
     let username = getItem(CALLPASS_USERNAME);
     username = username || '';
+    let rememberUsername = getItem(REMEMBER_USERNAME);
+    rememberUsername = !!rememberUsername && rememberUsername === 'true';
     return (
       <Row
         type="flex"
@@ -97,7 +100,7 @@ class NormalLoginForm extends React.Component {
             <FormItem>
               {getFieldDecorator('remember', {
                 valuePropName: 'checked',
-                initialValue: true,
+                initialValue: rememberUsername,
               })(
                 <Checkbox>记住用户名</Checkbox>
               )}

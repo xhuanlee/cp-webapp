@@ -9,11 +9,12 @@ export default {
 
   state: {
     status: undefined,
+    loginError: null,
     group: {},
   },
 
   effects: {
-    *callpassLogin({ payload: { username, password, redirect, group } }, { call, put }) {
+    *callpassLogin({ payload: { username, password, redirect } }, { call, put }) {
       try {
         yield put({ type: 'changeLoginError', payload: { loginError: null } });
         const data = yield call(callPassLogin, username, password);
@@ -28,18 +29,19 @@ export default {
           saveItem(TOKEN_KEY, data.DATA.token);
           saveItem(ALREADY_LOGIN, 'true');
           yield put({ type: 'user/saveCurrentUser', payload: { currentUser: data.DATA.entry } });
-          yield put({ type: 'user/saveToken', payload: { token: data.DATA.entry } });
+          yield put({ type: 'user/saveToken', payload: { token: data.DATA.token } });
           // 更新公司信息
           yield put(({ type: 'user/saveCurrentGroup', payload: { currentGroup: data.DATA.group } }));
 
           if (isNotBlank(redirect, true)) {
             yield put(routerRedux.push(redirect));
           }
-          if (isNotBlank(group, true)) {
-            yield put(routerRedux.push(`/e/${group}/webphone`));
-          } else {
-            yield put(routerRedux.push('/main/webphone'));
-          }
+          yield put(routerRedux.push('/main/webphone'));
+          // if (isNotBlank(group, true)) {
+          //   yield put(routerRedux.push(`/main/${group}/webphone`));
+          // } else {
+          //   yield put(routerRedux.push('/main/webphone'));
+          // }
         } else {
           yield put({ type: 'changeLoginError', payload: { loginError: `error_${Math.random()}` } });
         }
@@ -58,7 +60,7 @@ export default {
         if (isNotBlank(group)) {
           yield put(routerRedux.push(`/e/${group}`));
         } else {
-          yield put(routerRedux.push('/user/login'));
+          yield put(routerRedux.push('/login'));
         }
       } catch (exception) {
         console.log('logout failed');

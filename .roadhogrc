@@ -11,6 +11,12 @@
       "extraBabelPlugins": [
         "dva-hmr"
       ]
+    },
+    "production": {
+      "extraBabelPlugins": [
+        "transform-runtime",
+        ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }]
+      ]
     }
   },
   "externals": {
@@ -34,6 +40,12 @@
       "changeOrigin": true,
       "secure": false,
       "pathRewrite": {"^/aster-api": ""}
+    },
+    "/crm/*": {
+      "target": "https://callpass.cn/crm",
+      "changeOrigin": true,
+      "secure": false,
+      "pathRewrite": {"^/crm": ""}
     }
   }
 }

@@ -39,9 +39,9 @@ function getLayout(navData, path) {
 
 function RouterConfig({ history, app }) {
   const navData = getNavData(app);
-  const UserLayout = getLayout(navData, 'UserLayout').component;
-  const BasicLayout = getLayout(navData, 'BasicLayout').component;
+  const MainLayout = getLayout(navData, 'MainLayout').component;
   const CpUserLayout = getLayout(navData, 'CpUserLayout').component;
+  const CallLinkLayout = getLayout(navData, 'CallLinkLayout').component;
 
   const passProps = {
     app,
@@ -55,8 +55,10 @@ function RouterConfig({ history, app }) {
     <LocaleProvider locale={zhCN}>
       <Router history={history}>
         <Switch>
-          <Route path="/user" render={props => <UserLayout {...props} {...passProps} />} />
-          <Route path="/main" render={props => <BasicLayout {...props} {...passProps} />} />
+          <Route path="/main" render={props => <MainLayout {...props} {...passProps} />} />
+          <Route path="/btncall" render={props => <CallLinkLayout {...props} {...passProps} />} />
+          <Route path="/d" render={props => <CallLinkLayout {...props} {...passProps} />} />
+          <Route path="/u" render={props => <CallLinkLayout {...props} {...passProps} />} />
           <Route path="/" render={props => <CpUserLayout {...props} {...passProps} />} />
         </Switch>
       </Router>

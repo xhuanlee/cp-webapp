@@ -1,0 +1,11 @@
+export const INIT_DATA = 'init_data';
+export const DATA_OK = 'data_ok';
+export const CALLING = 'calling';
+export const TALKING = 'talking';
+export const HANGUP = 'hangup';
+export const WEBCAM = 'webcam';
+export const CALL_READY = 'call_ready';
+export const USER_AGENT = 'user_agent';
+export const CALL_FROM_IP = 'call_from_ip';
+export const CALL_FROM_AREA = 'call_from_area';
+export const CALL_FROM_LINK = 'call_from_link';

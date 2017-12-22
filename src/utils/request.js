@@ -1,5 +1,7 @@
 import fetch from 'dva/fetch';
 import { notification } from 'antd';
+import { getItem } from './cputils';
+import { TOKEN_KEY } from '../constants/AllConstants';
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -22,8 +24,12 @@ function checkStatus(response) {
  * @return {object}           An object containing either "data" or "err"
  */
 export default function request(url, options) {
+  const token = getItem(TOKEN_KEY);
   const defaultOptions = {
     credentials: 'include',
+    headers: {
+      token,
+    },
   };
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {

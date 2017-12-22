@@ -41,7 +41,6 @@ export default class HomePage extends Component {
 
   render() {
     const { mainCallBtn, totalCallBtn } = this.props.home;
-    console.log(totalCallBtn);
     let clientSection;
     if (mainCallBtn && mainCallBtn.length > 0) {
       clientSection = mainCallBtn.map((item) => {

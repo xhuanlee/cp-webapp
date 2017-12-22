@@ -10,15 +10,73 @@ const dynamicWrapper = (app, models, component) => dynamic({
 // nav data
 export const getNavData = app => [
   {
-    component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
-    layout: 'BasicLayout',
+    component: dynamicWrapper(app, ['user', 'login', 'client'], () => import('../layouts/MainLayout')),
+    layout: 'MainLayout',
     name: '首页', // for breadcrumb
-    path: '/main',
     children: [
       {
+        name: 'WEB电话',
+        icon: 'phone',
+        key: 'webphone',
+        path: 'main/webphone',
+        component: dynamicWrapper(app, ['phone'], () => import('../routes/Phone/WebPhone')),
+      },
+      {
+        name: '传真',
+        icon: 'printer',
+        path: 'main/fax',
+        key: 'fax',
+        component: dynamicWrapper(app, ['group'], () => import('../routes/Fax/FaxPage')),
+      },
+      {
+        name: '通话记录',
+        icon: 'profile',
+        path: 'main/cdr',
+        key: 'cdr',
+        component: dynamicWrapper(app, ['cdr', 'user'], () => import('../routes/Cdr/CdrPage')),
+      },
+      {
+        name: '电话线路',
+        icon: 'bars',
+        path: 'main/sip',
+        key: 'sip',
+        component: dynamicWrapper(app, ['sip', 'user'], () => import('../routes/Sip/SipPage')),
+      },
+      {
+        name: '呼叫按钮',
+        icon: 'desktop',
+        path: 'main/callbutton',
+        key: 'callbutton',
+        component: dynamicWrapper(app, ['group'], () => import('../routes/Group/Groups')),
+      },
+      {
+        name: '设置',
+        icon: 'setting',
+        key: 'setting',
+        path: 'main/setting',
+        // component: dynamicWrapper(app, ['group'], () => import('../routes/Group/Groups')),
+        children: [
+          {
+            name: '个人信息',
+            icon: 'user',
+            key: 'userInfo',
+            path: 'userInfo',
+            component: dynamicWrapper(app, ['group'], () => import('../routes/Setting/UserInfo')),
+          },
+          {
+            name: '修改密码',
+            icon: 'lock',
+            key: 'password',
+            path: 'password',
+            component: dynamicWrapper(app, ['group'], () => import('../routes/Setting/Password')),
+          },
+        ],
+      },
+      {
+        hideMenu: true,
         name: '公司管理',
         icon: 'gongsiguanli',
-        path: 'group',
+        path: 'main/group',
         children: [
           {
             name: '所有公司',
@@ -27,215 +85,44 @@ export const getNavData = app => [
           },
         ],
       },
-      {
-        name: 'Dashboard',
-        icon: 'dashboard',
-        path: 'dashboard',
-        children: [
-          {
-            name: '分析页',
-            path: 'analysis',
-            component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
-          },
-          {
-            name: '监控页',
-            path: 'monitor',
-            component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Monitor')),
-          },
-          {
-            name: '工作台',
-            path: 'workplace',
-            component: dynamicWrapper(app, ['project', 'activities', 'chart'], () => import('../routes/Dashboard/Workplace')),
-          },
-        ],
-      },
-      {
-        name: '表单页',
-        path: 'form',
-        icon: 'form',
-        children: [
-          {
-            name: '基础表单',
-            path: 'basic-form',
-            component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),
-          },
-          {
-            name: '分步表单',
-            path: 'step-form',
-            component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm')),
-            children: [
-              {
-                path: 'confirm',
-                component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step2')),
-              },
-              {
-                path: 'result',
-                component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/StepForm/Step3')),
-              },
-            ],
-          },
-          {
-            name: '高级表单',
-            path: 'advanced-form',
-            component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/AdvancedForm')),
-          },
-        ],
-      },
-      {
-        name: '列表页',
-        path: 'list',
-        icon: 'table',
-        children: [
-          {
-            name: '查询表格',
-            path: 'table-list',
-            component: dynamicWrapper(app, ['rule'], () => import('../routes/List/TableList')),
-          },
-          {
-            name: '标准列表',
-            path: 'basic-list',
-            component: dynamicWrapper(app, ['list'], () => import('../routes/List/BasicList')),
-          },
-          {
-            name: '卡片列表',
-            path: 'card-list',
-            component: dynamicWrapper(app, ['list'], () => import('../routes/List/CardList')),
-          },
-          {
-            name: '搜索列表（项目）',
-            path: 'cover-card-list',
-            component: dynamicWrapper(app, ['list'], () => import('../routes/List/CoverCardList')),
-          },
-          {
-            name: '搜索列表（应用）',
-            path: 'filter-card-list',
-            component: dynamicWrapper(app, ['list'], () => import('../routes/List/FilterCardList')),
-          },
-          {
-            name: '搜索列表（文章）',
-            path: 'search',
-            component: dynamicWrapper(app, ['list'], () => import('../routes/List/SearchList')),
-          },
-        ],
-      },
-      {
-        name: '详情页',
-        path: 'profile',
-        icon: 'profile',
-        children: [
-          {
-            name: '基础详情页',
-            path: 'basic',
-            component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/BasicProfile')),
-          },
-          {
-            name: '高级详情页',
-            path: 'advanced',
-            component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/AdvancedProfile')),
-          },
-        ],
-      },
-      {
-        name: '结果',
-        path: 'result',
-        icon: 'check-circle-o',
-        children: [
-          {
-            name: '成功',
-            path: 'success',
-            component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
-          },
-          {
-            name: '失败',
-            path: 'fail',
-            component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
-          },
-        ],
-      },
-      {
-        name: '异常',
-        path: 'exception',
-        icon: 'warning',
-        children: [
-          {
-            name: '403',
-            path: '403',
-            component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
-          },
-          {
-            name: '404',
-            path: '404',
-            component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
-          },
-          {
-            name: '500',
-            path: '500',
-            component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
-          },
-        ],
-      },
-    ],
-  },
-  {
-    component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
-    path: '/user',
-    layout: 'UserLayout',
-    children: [
-      {
-        name: '帐户',
-        icon: 'user',
-        path: 'user',
-        children: [
-          {
-            name: '登录',
-            path: 'login',
-            component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
-          },
-          {
-            name: '注册',
-            path: 'register',
-            component: dynamicWrapper(app, ['register'], () => import('../routes/User/Register')),
-          },
-          {
-            name: '注册结果',
-            path: 'register-result',
-            component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
-          },
-        ],
-      },
     ],
   },
   {
     component: dynamicWrapper(app, [], () => import('../layouts/CpUserLayout')),
-    path: '/',
     layout: 'CpUserLayout',
     children: [
       {
+        hideMenu: true,
         name: '主页',
         path: '/',
         component: dynamicWrapper(app, ['home'], () => import('../routes/Home/HomePage')),
       },
       {
+        hideMenu: true,
         name: '关于',
-        path: '/about',
+        path: 'about',
         component: dynamicWrapper(app, [], () => import('../routes/Home/AboutPage')),
       },
       {
+        hideMenu: true,
         name: '注册',
         path: 'register',
         component: dynamicWrapper(app, ['register'], () => import('../routes/User/CpRegister')),
       },
       {
+        hideMenu: true,
         name: '注册结果',
         path: 'register-result',
         component: dynamicWrapper(app, ['register'], () => import('../routes/User/RegisterResult')),
       },
       {
+        hideMenu: true,
         name: '登录',
         path: 'login',
         component: dynamicWrapper(app, ['login'], () => import('../routes/User/NormalLoginForm')),
       },
       {
+        hideMenu: true,
         name: '公司',
         path: 'e',
         children: [
@@ -249,13 +136,33 @@ export const getNavData = app => [
     ],
   },
   {
-    component: dynamicWrapper(app, [], () => import('../layouts/BlankLayout')),
-    layout: 'BlankLayout',
-    children: {
-      name: '使用文档',
-      path: 'http://pro.ant.design/docs/getting-started',
-      target: '_blank',
-      icon: 'book',
-    },
+    component: dynamicWrapper(app, ['client'], () => import('../layouts/CallLinkLayout')),
+    layout: 'CallLinkLayout',
+    children: [
+      {
+        hideMenu: true,
+        name: 'BtnCall',
+        path: '/btncall',
+        component: dynamicWrapper(app, ['client'], () => import('../routes/CallLink/WebcallButton')),
+      },
+      {
+        hideMenu: true,
+        name: 'User',
+        path: '/u/:user',
+        component: dynamicWrapper(app, ['client'], () => import('../routes/CallLink/VertoUserLink')),
+      },
+      {
+        hideMenu: true,
+        name: 'Dialplan',
+        path: '/d/:dialplan',
+        component: dynamicWrapper(app, ['client'], () => import('../routes/CallLink/VertoDialplanLink')),
+      },
+      {
+        hideMenu: true,
+        name: 'Group Dialplan',
+        path: '/d/:group/:extension',
+        component: dynamicWrapper(app, ['client'], () => import('../routes/CallLink/VertoDialplanGroupLink')),
+      },
+    ],
   },
 ];

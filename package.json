@@ -20,9 +20,11 @@
   },
   "dependencies": {
     "antd": "^3.0.0",
+    "axios": "^0.17.1",
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.9.2",
     "classnames": "^2.2.5",
+    "compression-webpack-plugin": "^1.1.2",
     "core-js": "^2.5.1",
     "dva": "^2.1.0",
     "g-cloud": "^1.0.2-beta",
@@ -31,6 +33,7 @@
     "lodash": "^4.17.4",
     "lodash-decorators": "^4.4.1",
     "lodash.clonedeep": "^4.5.0",
+    "md5": "^2.2.1",
     "moment": "^2.19.1",
     "numeral": "^2.0.6",
     "prop-types": "^15.5.10",
@@ -40,7 +43,10 @@
     "react-container-query": "^0.9.1",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.0.0",
-    "react-fittext": "^1.0.0"
+    "react-fittext": "^1.0.0",
+    "react-native-web": "^0.1.16",
+    "react-native-web-extended": "^0.0.7",
+    "socket.io-client": "^2.0.4"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",
@@ -83,14 +89,27 @@
     "nightmare": "^2.10.0"
   },
   "babel": {
-    "presets": ["env", "react"],
-    "plugins": ["transform-decorators-legacy", "transform-class-properties"]
+    "presets": [
+      "env",
+      "react"
+    ],
+    "plugins": [
+      "transform-decorators-legacy",
+      "transform-class-properties"
+    ]
   },
   "jest": {
-    "setupFiles": ["<rootDir>/tests/setupTests.js"],
-    "testMatch": ["**/?(*.)(spec|test|e2e).js?(x)"],
+    "setupFiles": [
+      "<rootDir>/tests/setupTests.js"
+    ],
+    "testMatch": [
+      "**/?(*.)(spec|test|e2e).js?(x)"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/tests/jasmine.js",
-    "moduleFileExtensions": ["js", "jsx"],
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/tests/styleMock.js"
     }
@@ -99,5 +118,9 @@
     "**/*.{js,jsx}": "lint-staged:js",
     "**/*.less": "stylelint --syntax less"
   },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 10"]
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
 }
